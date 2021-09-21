@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Setter
 @Getter
-@ToString
+@AllArgsConstructor
 @Entity
 @Table(name = "products")
 @SequenceGenerator(name = "seq_prod", sequenceName = "seq_prod", allocationSize = 1)
@@ -33,4 +33,5 @@ public class Product {
 	
 	@Column(name = "prod_description")
     private String description;
+	
 }

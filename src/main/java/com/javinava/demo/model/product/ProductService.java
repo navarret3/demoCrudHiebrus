@@ -24,12 +24,12 @@ public class ProductService {
 	}
 	
 	@Transactional
-	public List<Product> getByName(String name) throws NotFoundException {
+	public List<Product> getByName(String name) {
 		return repository.findByName(name);
 	}
 	
 	@Transactional
-	public List<Product> getByDescription(String description) throws NotFoundException {
+	public List<Product> getByDescription(String description) {
 		return repository.findByDescription(description);
 	}
 
