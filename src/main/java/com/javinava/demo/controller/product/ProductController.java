@@ -1,11 +1,13 @@
 package com.javinava.demo.controller.product;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,6 +100,13 @@ public class ProductController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Async
+	@PostMapping("/createAsync")
+    public CompletableFuture<Product> createAsync(@RequestBody Product entity) {
+		
+        return CompletableFuture.supplyAsync(() -> productService.createProduct(entity));
+    }
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable() Long id, @RequestBody Product entity) {
