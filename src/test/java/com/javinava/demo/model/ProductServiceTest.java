@@ -10,100 +10,80 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.javinava.demo.controller.product.ProductDTO;
 import com.javinava.demo.model.product.Product;
-import com.javinava.demo.model.product.ProductService;
+import com.javinava.demo.model.product.ProductServiceImpl;
 import com.javinava.demo.repository.product.ProductRepository;
 
-@SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
-public class ProductServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ProductServiceTest {
 
-	@Autowired
-	ProductService service;
+	@InjectMocks
+	ProductServiceImpl service;
 	
-    @MockBean
+    @Mock
     ProductRepository productRepository;
     
-    Product PRODUCT_1 = new Product(1l, "Pera", "Viene del peral");
-    Product PRODUCT_2 = new Product(2l, "Piña", "Pincha");
-    Product PRODUCT_3 = new Product(3l, "Manzana", "Lo mejor");
-    Product PRODUCT_4 = new Product(3l, "Mandarina", "Una naranja pequeñita");
-    Optional<Product> PRODUCT_5 = Optional.of(new Product(5l, "Naranja", "Mandarina grande"));
-    List<Product> productList = new ArrayList<>(Arrays.asList(PRODUCT_1, PRODUCT_2, PRODUCT_3, PRODUCT_4));
-    
     @Test
-    public void getById() throws Exception {
-        Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(PRODUCT_5);
+    void getById() throws Exception {
+        Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
         
         Optional<Product> product = Optional.of(service.getById(1l));
         
-    	assertThat(product).isEqualTo(PRODUCT_5);
+    	assertThat(product).isEqualTo(ProductMother.PRODUCT_5);
     }
     
     @Test
-    public void getByName() throws Exception {
-    	List<Product> products = new ArrayList<>(Arrays.asList(PRODUCT_1));
+    void getByParams() throws Exception {
+    	List<Product> products = new ArrayList<>(Arrays.asList(ProductMother.PRODUCT_1));
     	
-        Mockito.when(productRepository.findByName(Mockito.anyString())).thenReturn(products);
+        Mockito.when(productRepository.findByBoth(Mockito.anyString(),Mockito.anyString())).thenReturn(products);
         
-        List<Product> productList = service.getByName("Pera");
+        List<Product> productList = service.getByParams("Pera", "desc");
         
     	assertThat(productList).size().isEqualTo(1);
     }
     
     @Test
-    public void getByDescription() throws Exception {
-    	List<Product> products = new ArrayList<>(Arrays.asList(PRODUCT_2));
-    	
-        Mockito.when(productRepository.findByDescription(Mockito.anyString())).thenReturn(products);
+    void getAll() throws Exception {
         
-        List<Product> productList = service.getByDescription("Pincha");
-        
-    	assertThat(productList).size().isEqualTo(1);
-    }
-    
-    @Test
-    public void getAll() throws Exception {
-    	List<Product> products = new ArrayList<>(Arrays.asList(PRODUCT_1, PRODUCT_2, PRODUCT_3, PRODUCT_4));
-        
-        Mockito.when(productRepository.findAll()).thenReturn(products);
+        Mockito.when(productRepository.findAll()).thenReturn(ProductMother.products);
         
         List<Product> list = service.getAll();
     	
-    	assertThat(list).size().isGreaterThan(0);
+    	assertThat(list).size().isPositive();
     }
     
     @Test
-    public void create() throws Exception {
+    void create() throws Exception {
         
-    	Mockito.when(productRepository.save(Mockito.any())).thenReturn(PRODUCT_3);
+    	Mockito.when(productRepository.save(Mockito.any())).thenReturn(ProductMother.PRODUCT_3);
         
-        Product product = service.createProduct(PRODUCT_3);
+        ProductDTO product = service.createProduct(ProductMother.PRODUCT_DTO_3);
     	
-    	assertThat(product).isEqualTo(PRODUCT_3);
+    	assertThat(product.getName()).isEqualTo(ProductMother.PRODUCT_DTO_3.getName());
     }
     
     @Test
-    public void update() throws Exception {
+    void update() throws Exception {
         
-    	Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(PRODUCT_5);
+    	Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
     	
-    	Mockito.when(productRepository.save(Mockito.any())).thenReturn(PRODUCT_1);
+    	Mockito.when(productRepository.save(Mockito.any())).thenReturn(ProductMother.PRODUCT_1);
         
-    	Optional<Product> product = Optional.of(service.updateProduct(5l,PRODUCT_1));
+    	Optional<Product> product = Optional.of(service.updateProduct(5l,ProductMother.PRODUCT_DTO_1));
     	
-    	assertThat(product.get().getName()).isEqualTo(PRODUCT_1.getName());
+    	assertThat(product.get().getName()).isEqualTo(ProductMother.PRODUCT_1.getName());
     }
     
     @Test
-    public void delete() throws Exception {
+    void delete() throws Exception {
         
     	Mockito.doNothing().when(productRepository).deleteById(1l);
     	

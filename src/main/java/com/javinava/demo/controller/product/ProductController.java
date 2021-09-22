@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -16,12 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javinava.demo.model.product.Product;
-import com.javinava.demo.model.product.ProductService;
-
-import javassist.NotFoundException;
+import com.javinava.demo.model.product.ProductServiceImpl;
+import com.javinava.demo.utils.ProductUtils;
 
 @RestController
 @RequestMapping("/products")
@@ -29,114 +28,60 @@ import javassist.NotFoundException;
 public class ProductController {
 
 	@Autowired
-	ProductService productService;
-
+	ProductServiceImpl productService;
+	
 	@GetMapping("{id}")
-	public ResponseEntity<Product> getById(@PathVariable() Long id) {
-		try {
-			Product responseProduct = productService.getById(id);
+	public ResponseEntity<ProductDTO> getById(@PathVariable() Long id) {
 
-			return new ResponseEntity<>(responseProduct, HttpStatus.OK);
-		} catch (NotFoundException e) {
-				return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-				
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		} 
-	}
-	
-	@GetMapping("/findByName/{name}")
-	public ResponseEntity<List<Product>> getByName(@PathVariable() String name) {
-		try {
-			List<Product> productList = productService.getByName(name);
-
-			if (productList.isEmpty()) {
-				return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-			}
-
-			return new ResponseEntity<>(productList, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		} 
-	}
-	
-	@GetMapping("/findByDescription/{description}")
-	public ResponseEntity<List<Product>> getByDescription(@PathVariable() String description) {
-		try {
-			List<Product> productList = productService.getByDescription(description);
-
-			if (productList.isEmpty()) {
-				return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-			}
-
-			return new ResponseEntity<>(productList, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		} 
-	}
-
-	@GetMapping("/getAll")
-	public ResponseEntity<List<Product>> getAllProducts() {
-		try {
-			List<Product> response = productService.getAll();
-
-			if (response.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@PostMapping("/create")
-	public ResponseEntity<Product> createProduct(@RequestBody Product entity) {
-		try {
-			Product response = productService.createProduct(entity);
-
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@Async
-	@PostMapping("/createAsync")
-    public CompletableFuture<Product> createAsync(@RequestBody Product entity) {
+		Product responseProduct = productService.getById(id);
 		
-        return CompletableFuture.supplyAsync(() -> productService.createProduct(entity));
-    }
+		return new ResponseEntity<>(ProductUtils.entityToDto(responseProduct), HttpStatus.OK);
+	}
+	
+	@GetMapping("/getByParams")
+	public ResponseEntity<List<ProductDTO>> getByParams(@RequestParam(required = false) String name, @RequestParam(required = false) String description) {
+		
+		List<Product> productList = productService.getByParams(name, description);
 
-	@PutMapping("/update/{id}")
-	public ResponseEntity<Product> updateProduct(@PathVariable() Long id, @RequestBody Product entity) {
-		try {
-			Product product = productService.updateProduct(id, entity);
-			
-			if (product == null) {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-
-			return new ResponseEntity<>(product, HttpStatus.OK);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<>(ProductUtils.entitiesToDtos(productList), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@GetMapping("")
+	public ResponseEntity<List<ProductDTO>> getAllProducts() {
+
+		List<Product> response = productService.getAll();
+
+		return new ResponseEntity<>(ProductUtils.entitiesToDtos(response), HttpStatus.OK);
+	}
+
+	@PostMapping("")
+	public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO dto) {
+
+		ProductDTO response = productService.createProduct(dto);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@Async
+	@PostMapping("/async")
+	public CompletableFuture<ProductDTO> createAsync(@RequestBody ProductDTO dto) {
+
+		return CompletableFuture.supplyAsync(() -> productService.createProduct(dto));
+	}
+
+	@PutMapping("{id}")
+	public ResponseEntity<ProductDTO> updateProduct(@PathVariable() Long id, @RequestBody ProductDTO dto) {
+
+		Product product = productService.updateProduct(id, dto);
+
+		return new ResponseEntity<>(ProductUtils.entityToDto(product), HttpStatus.OK);
+	}
+
+	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteProduct(@PathVariable() Long id) {
-		try {
-			productService.deleteProduct(id);
+		
+		productService.deleteProduct(id);
 
-			return new ResponseEntity<>("Product " + id + " deleted.", HttpStatus.OK);
-			
-		} catch (EmptyResultDataAccessException em) {
-			return new ResponseEntity<>("Product " + id + " doesnt exists.", HttpStatus.NOT_FOUND);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
+		return new ResponseEntity<>("Product " + id + " deleted.", HttpStatus.OK);
 	}
 }
