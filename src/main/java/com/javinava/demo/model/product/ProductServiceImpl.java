@@ -19,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	ProductRepository repository;
-	
+
 	private ModelMapper modelMapper = new ModelMapper();
 
 	@Transactional
@@ -29,17 +29,17 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional
 	public List<Product> getByParams(String name, String description) {
-		
+
 		List<Product> list = new ArrayList<>();
-		
-		if(name != null && description != null) {
+
+		if (name != null && description != null) {
 			list = repository.findByBoth(name, description);
 		} else if (name != null) {
 			list = repository.findByName(name);
 		} else if (description != null) {
 			list = repository.findByDescription(description);
 		}
-		
+
 		if (list.isEmpty()) {
 			throw new ProductNotFoundException();
 		}
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public List<Product> getAll() {
 		List<Product> list = repository.findAll();
-		
+
 		if (list.isEmpty()) {
 			throw new ProductNotFoundException();
 		}
@@ -60,11 +60,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional
 	public ProductDTO createProduct(ProductDTO dto) throws ProductGenericException {
-		
+
 		Product entity = modelMapper.map(dto, Product.class);
-		
+
 		if (validateProduct(entity)) {
-			return ProductUtils.entityToDto(repository.save(entity));
+			return ProductUtils.entityToDto(repository.create(entity));
 		}
 
 		throw new ProductGenericException("Record cannot be created.");
@@ -73,28 +73,33 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public Product updateProduct(Long id, ProductDTO dtoUpdated) {
 
-		if (repository.findById(id).isPresent()) {
-			Product product = repository.findById(id).get();
+		try {
+			if (repository.findById(id).isPresent()) {
+				Product product = repository.findById(id).get();
 
-			if (dtoUpdated.getName() != null) {
-				product.setName(dtoUpdated.getName());
+				if (dtoUpdated.getName() != null) {
+					product.setName(dtoUpdated.getName());
+				}
+
+				if (dtoUpdated.getDescription() != null) {
+					product.setDescription(dtoUpdated.getDescription());
+				}
+
+				return repository.update(product);
+			} else {
+				throw new ProductNotFoundException();
 			}
-
-			if (dtoUpdated.getDescription() != null) {
-				product.setDescription(dtoUpdated.getDescription());
-			}
-
-			return repository.save(product);
-		} else {
+		} catch (NullPointerException npe) {
 			throw new ProductNotFoundException();
 		}
+
 	}
 
 	@Transactional
 	public void deleteProduct(Long id) {
 		try {
-			repository.deleteById(id);
-		} catch (Exception e){
+			repository.delete(id);
+		} catch (Exception e) {
 			throw new ProductNotFoundException();
 		}
 	}

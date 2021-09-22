@@ -2,8 +2,6 @@ package com.javinava.demo.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import com.javinava.demo.controller.product.ProductController;
 import com.javinava.demo.controller.product.ProductDTO;
 import com.javinava.demo.model.ProductMother;
-import com.javinava.demo.model.product.Product;
 import com.javinava.demo.model.product.ProductServiceImpl;
 
 @SpringBootTest

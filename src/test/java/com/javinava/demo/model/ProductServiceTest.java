@@ -63,7 +63,7 @@ class ProductServiceTest {
     @Test
     void create() throws Exception {
         
-    	Mockito.when(productRepository.save(Mockito.any())).thenReturn(ProductMother.PRODUCT_3);
+    	Mockito.when(productRepository.create(Mockito.any())).thenReturn(ProductMother.PRODUCT_3);
         
         ProductDTO product = service.createProduct(ProductMother.PRODUCT_DTO_3);
     	
@@ -75,20 +75,20 @@ class ProductServiceTest {
         
     	Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
     	
-    	Mockito.when(productRepository.save(Mockito.any())).thenReturn(ProductMother.PRODUCT_1);
+    	Mockito.when(productRepository.update(Mockito.any())).thenReturn(ProductMother.PRODUCT_1);
         
-    	Optional<Product> product = Optional.of(service.updateProduct(5l,ProductMother.PRODUCT_DTO_1));
+    	Product product = service.updateProduct(5l,ProductMother.PRODUCT_DTO_1);
     	
-    	assertThat(product.get().getName()).isEqualTo(ProductMother.PRODUCT_1.getName());
+    	assertThat(product.getName()).isEqualTo(ProductMother.PRODUCT_1.getName());
     }
     
     @Test
     void delete() throws Exception {
         
-    	Mockito.doNothing().when(productRepository).deleteById(1l);
+    	Mockito.when(productRepository.delete(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_1);
     	
         service.deleteProduct(1l);
         
-        verify(productRepository,times(1)).deleteById(1l);
+        verify(productRepository,times(1)).delete(1l);
     }
 }
