@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Something goes wrong")
 public class ProductGenericException extends RuntimeException {
-	
+
 	private static final long serialVersionUID = -404129071869940575L;
 
 	public ProductGenericException(String message) {
-        super(message);
-    }
+		super(message);
+	}
 
 }

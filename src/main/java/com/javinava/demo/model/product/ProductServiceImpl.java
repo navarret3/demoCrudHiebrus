@@ -97,9 +97,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional
 	public void deleteProduct(Long id) {
-		try {
-			repository.delete(id);
-		} catch (Exception e) {
+		if (repository.delete(id) == null) {
 			throw new ProductNotFoundException();
 		}
 	}

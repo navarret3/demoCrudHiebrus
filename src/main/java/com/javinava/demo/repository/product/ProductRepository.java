@@ -56,9 +56,6 @@ public class ProductRepository {
     }
 	
 	public Product delete(Long id) {
-		Product p = productStorage.get(id);
-		productStorage.remove(id);
-
-        return p;
+		return productStorage.remove(id);
     }
 }

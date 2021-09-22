@@ -26,69 +26,69 @@ class ProductServiceTest {
 
 	@InjectMocks
 	ProductServiceImpl service;
-	
-    @Mock
-    ProductRepository productRepository;
-    
-    @Test
-    void getById() throws Exception {
-        Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
-        
-        Optional<Product> product = Optional.of(service.getById(1l));
-        
-    	assertThat(product).isEqualTo(ProductMother.PRODUCT_5);
-    }
-    
-    @Test
-    void getByParams() throws Exception {
-    	List<Product> products = new ArrayList<>(Arrays.asList(ProductMother.PRODUCT_1));
-    	
-        Mockito.when(productRepository.findByBoth(Mockito.anyString(),Mockito.anyString())).thenReturn(products);
-        
-        List<Product> productList = service.getByParams("Pera", "desc");
-        
-    	assertThat(productList).size().isEqualTo(1);
-    }
-    
-    @Test
-    void getAll() throws Exception {
-        
-        Mockito.when(productRepository.findAll()).thenReturn(ProductMother.products);
-        
-        List<Product> list = service.getAll();
-    	
-    	assertThat(list).size().isPositive();
-    }
-    
-    @Test
-    void create() throws Exception {
-        
-    	Mockito.when(productRepository.create(Mockito.any())).thenReturn(ProductMother.PRODUCT_3);
-        
-        ProductDTO product = service.createProduct(ProductMother.PRODUCT_DTO_3);
-    	
-    	assertThat(product.getName()).isEqualTo(ProductMother.PRODUCT_DTO_3.getName());
-    }
-    
-    @Test
-    void update() throws Exception {
-        
-    	Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
-    	
-    	Mockito.when(productRepository.update(Mockito.any())).thenReturn(ProductMother.PRODUCT_1);
-        
-    	Product product = service.updateProduct(5l,ProductMother.PRODUCT_DTO_1);
-    	
-    	assertThat(product.getName()).isEqualTo(ProductMother.PRODUCT_1.getName());
-    }
-    
-    @Test
-    void delete() throws Exception {
-        
-    	Mockito.when(productRepository.delete(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_1);
-    	
-        service.deleteProduct(1l);
-        
-        verify(productRepository,times(1)).delete(1l);
-    }
+
+	@Mock
+	ProductRepository productRepository;
+
+	@Test
+	void getById() throws Exception {
+		Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
+
+		Optional<Product> product = Optional.of(service.getById(1l));
+
+		assertThat(product).isEqualTo(ProductMother.PRODUCT_5);
+	}
+
+	@Test
+	void getByParams() throws Exception {
+		List<Product> products = new ArrayList<>(Arrays.asList(ProductMother.PRODUCT_1));
+
+		Mockito.when(productRepository.findByBoth(Mockito.anyString(), Mockito.anyString())).thenReturn(products);
+
+		List<Product> productList = service.getByParams("Pera", "desc");
+
+		assertThat(productList).size().isEqualTo(1);
+	}
+
+	@Test
+	void getAll() throws Exception {
+
+		Mockito.when(productRepository.findAll()).thenReturn(ProductMother.products);
+
+		List<Product> list = service.getAll();
+
+		assertThat(list).size().isPositive();
+	}
+
+	@Test
+	void create() throws Exception {
+
+		Mockito.when(productRepository.create(Mockito.any())).thenReturn(ProductMother.PRODUCT_3);
+
+		ProductDTO product = service.createProduct(ProductMother.PRODUCT_DTO_3);
+
+		assertThat(product.getName()).isEqualTo(ProductMother.PRODUCT_DTO_3.getName());
+	}
+
+	@Test
+	void update() throws Exception {
+
+		Mockito.when(productRepository.findById(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_5);
+
+		Mockito.when(productRepository.update(Mockito.any())).thenReturn(ProductMother.PRODUCT_1);
+
+		Product product = service.updateProduct(5l, ProductMother.PRODUCT_DTO_1);
+
+		assertThat(product.getName()).isEqualTo(ProductMother.PRODUCT_1.getName());
+	}
+
+	@Test
+	void delete() throws Exception {
+
+		Mockito.when(productRepository.delete(Mockito.anyLong())).thenReturn(ProductMother.PRODUCT_1);
+
+		service.deleteProduct(1l);
+
+		verify(productRepository, times(1)).delete(1l);
+	}
 }

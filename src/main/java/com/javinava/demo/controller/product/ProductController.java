@@ -29,18 +29,19 @@ public class ProductController {
 
 	@Autowired
 	ProductServiceImpl productService;
-	
+
 	@GetMapping("{id}")
 	public ResponseEntity<ProductDTO> getById(@PathVariable() Long id) {
 
 		Product responseProduct = productService.getById(id);
-		
+
 		return new ResponseEntity<>(ProductUtils.entityToDto(responseProduct), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/getByParams")
-	public ResponseEntity<List<ProductDTO>> getByParams(@RequestParam(required = false) String name, @RequestParam(required = false) String description) {
-		
+	public ResponseEntity<List<ProductDTO>> getByParams(@RequestParam(required = false) String name,
+			@RequestParam(required = false) String description) {
+
 		List<Product> productList = productService.getByParams(name, description);
 
 		return new ResponseEntity<>(ProductUtils.entitiesToDtos(productList), HttpStatus.OK);
@@ -79,7 +80,7 @@ public class ProductController {
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteProduct(@PathVariable() Long id) {
-		
+
 		productService.deleteProduct(id);
 
 		return new ResponseEntity<>("Product " + id + " deleted.", HttpStatus.OK);

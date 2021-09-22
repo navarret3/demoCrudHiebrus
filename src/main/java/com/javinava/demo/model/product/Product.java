@@ -22,18 +22,18 @@ import lombok.Setter;
 @Entity
 @Table(name = "products")
 @SequenceGenerator(name = "seq_prod", sequenceName = "seq_prod", allocationSize = 1)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_prod")
 	@Column(name = "prod_id")
 	private Long id;
-	 
+
 	@Column(name = "prod_name")
-    private String name;
-	
+	private String name;
+
 	@Column(name = "prod_description")
-    private String description;
-	
+	private String description;
+
 }
