@@ -5,11 +5,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.javinava.demo.model.product.Product;
 
-@Service
+@Component
 public class ProductRepository {
 	private static ConcurrentHashMap<Long, Product> productStorage = new ConcurrentHashMap<>();
 
