@@ -1,4 +1,4 @@
-# Demo entrevista Inditex
+# Demo Inditex
 
 _DEMO de un Web Service corriendo un CRUD montado en REST_
 
@@ -40,8 +40,6 @@ _Para esta aplicación se han hecho 2 tests con Junit y mockito, uno para cubrir
 _Como se ha comentado arriba, únicamente necesitaremos correr la aplicación desde la clase DemoApplication ya que está usando un servidor de tomcat embebido._
 
 ## Construido con 🛠️
-
-_Menciona las herramientas que utilizaste para crear tu proyecto_
 
 * [SpringBoot](https://spring.io/projects/spring-boot)
 * [Maven](https://maven.apache.org/)
