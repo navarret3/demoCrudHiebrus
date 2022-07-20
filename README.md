@@ -1,4 +1,4 @@
-# Demo Inditex
+# Demo
 
 _DEMO de un Web Service corriendo un CRUD montado en REST_
 
